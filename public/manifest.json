@@ -1,0 +1,22 @@
+{
+  "name": "사랑연구소 - AI 연애 컨설팅",
+  "short_name": "사랑연구소",
+  "description": "나의 연애 데이터를 기억하는 AI. 데이터 기반 맞춤형 연애 분석 서비스.",
+  "start_url": "/home",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ec4899",
+  "orientation": "portrait",
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

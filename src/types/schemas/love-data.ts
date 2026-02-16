@@ -5,9 +5,11 @@ export const exPartnerSchema = z.object({
   mbti: z.string().optional(),
   personality: z.string().max(100).optional(),
   conflictTypes: z.array(z.string()).default([]),
+  conflictDetail: z.string().max(1000).optional(),
   breakupReason: z.string().max(500).optional(),
-  satisfactionScore: z.number().min(1).max(10),
   relationshipDuration: z.number().min(0).optional(),
+  styleAnswers: z.record(z.string(), z.string()).default({}),
+  goodPoints: z.string().max(1000).optional(),
 });
 
 export type ExPartnerFormData = z.input<typeof exPartnerSchema>;

@@ -16,24 +16,24 @@ export default function ScoreGauge({ score, label, size = 'md' }: ScoreGaugeProp
   };
 
   const getColor = (s: number) => {
-    if (s >= 80) return 'text-green-500 border-green-200 bg-green-50';
-    if (s >= 60) return 'text-blue-500 border-blue-200 bg-blue-50';
-    if (s >= 40) return 'text-yellow-500 border-yellow-200 bg-yellow-50';
-    return 'text-red-500 border-red-200 bg-red-50';
+    if (s >= 80) return 'text-green-600 border-green-300 bg-green-50 dark:text-green-400 dark:border-green-700 dark:bg-green-950';
+    if (s >= 60) return 'text-primary border-primary/30 bg-primary/5';
+    if (s >= 40) return 'text-yellow-600 border-yellow-300 bg-yellow-50 dark:text-yellow-400 dark:border-yellow-700 dark:bg-yellow-950';
+    return 'text-destructive border-destructive/30 bg-destructive/5';
   };
 
   return (
     <div className="flex flex-col items-center gap-2">
       <div
         className={cn(
-          'flex items-center justify-center rounded-full border-4 font-bold',
+          'flex items-center justify-center rounded-full border-4 font-bold shadow-neo',
           sizeClasses[size],
           getColor(score)
         )}
       >
         {score}%
       </div>
-      <p className="text-sm text-gray-500">{label}</p>
+      <p className="text-sm font-medium text-muted-foreground">{label}</p>
     </div>
   );
 }

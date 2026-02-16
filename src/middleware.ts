@@ -1,14 +1,10 @@
-import { NextRequest, NextResponse } from 'next/server';
+import { type NextRequest, NextResponse } from 'next/server';
+import { updateSession } from '@/lib/supabase/middleware';
 
-const PUBLIC_PATHS = ['/', '/login', '/kakao/callback', '/api/auth', '/api/webhooks'];
+const PUBLIC_PATHS = ['/', '/login', '/auth/callback', '/api/webhooks'];
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
-  // 공개 경로는 통과
-  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
-    return NextResponse.next();
-  }
 
   // 정적 파일, _next, favicon 등은 통과
   if (
@@ -19,10 +15,22 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-  // 관리자 페이지 접근 제어는 클라이언트에서 처리
-  // (zustand 스토어의 user.role 체크)
+  // 공개 경로는 세션 갱신만 하고 통과
+  if (PUBLIC_PATHS.some((path) => pathname.startsWith(path))) {
+    const { supabaseResponse } = await updateSession(request);
+    return supabaseResponse;
+  }
 
-  return NextResponse.next();
+  // 인증 필요한 경로: 세션 갱신 + 인증 확인
+  const { supabaseResponse, user } = await updateSession(request);
+
+  if (!user) {
+    const url = request.nextUrl.clone();
+    url.pathname = '/login';
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
 }
 
 export const config = {

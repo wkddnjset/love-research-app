@@ -9,20 +9,21 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import MobileHeader from '@/components/layout/MobileHeader';
 import ScoreGauge from '@/features/analysis/components/ScoreGauge';
 import ResultCard from '@/features/analysis/components/ResultCard';
 import { compatibilityInputSchema, type CompatibilityInputFormData } from '@/types/schemas/analysis';
 import { MBTI_OPTIONS } from '@/lib/constants';
-import { useDataStore } from '@/stores/dataStore';
+import { useAnalysisHistory } from '@/hooks/useSupabaseData';
 
 import type { CompatibilityResult } from '@/types';
 
 export default function CompatibilityPage() {
   const [result, setResult] = useState<CompatibilityResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { addAnalysisResult } = useDataStore();
+  const { addAnalysisResult } = useAnalysisHistory();
 
   const { register, handleSubmit, setValue, formState: { errors } } = useForm<CompatibilityInputFormData>({
     resolver: zodResolver(compatibilityInputSchema),
@@ -40,7 +41,7 @@ export default function CompatibilityPage() {
       if (!res.ok) throw new Error('분석 실패');
       const json = await res.json();
       setResult(json);
-      addAnalysisResult('compatibility', data as unknown as Record<string, unknown>, json, json.score);
+      await addAnalysisResult({ moduleType: 'compatibility', inputData: data as unknown as Record<string, unknown>, result: json, score: json.score });
     } catch {
       toast.error('분석 중 오류가 발생했습니다. 다시 시도해주세요.');
     } finally {
@@ -54,62 +55,66 @@ export default function CompatibilityPage() {
 
       <div className="space-y-6 px-4 py-4">
         {!result ? (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Label>나의 MBTI *</Label>
-              <Select onValueChange={(v) => setValue('myMbti', v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="선택해주세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {MBTI_OPTIONS.map((mbti) => (
-                    <SelectItem key={mbti} value={mbti}>{mbti}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.myMbti && <p className="text-xs text-red-500">{errors.myMbti.message}</p>}
-            </div>
+          <Card className="shadow-neo">
+            <CardContent className="p-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-2">
+                  <Label>나의 MBTI *</Label>
+                  <Select onValueChange={(v) => setValue('myMbti', v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택해주세요" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MBTI_OPTIONS.map((mbti) => (
+                        <SelectItem key={mbti} value={mbti}>{mbti}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.myMbti && <p className="text-xs text-destructive">{errors.myMbti.message}</p>}
+                </div>
 
-            <div className="space-y-2">
-              <Label>상대 MBTI *</Label>
-              <Select onValueChange={(v) => setValue('partnerMbti', v)}>
-                <SelectTrigger>
-                  <SelectValue placeholder="선택해주세요" />
-                </SelectTrigger>
-                <SelectContent>
-                  {MBTI_OPTIONS.map((mbti) => (
-                    <SelectItem key={mbti} value={mbti}>{mbti}</SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-              {errors.partnerMbti && <p className="text-xs text-red-500">{errors.partnerMbti.message}</p>}
-            </div>
+                <div className="space-y-2">
+                  <Label>상대 MBTI *</Label>
+                  <Select onValueChange={(v) => setValue('partnerMbti', v)}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="선택해주세요" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {MBTI_OPTIONS.map((mbti) => (
+                        <SelectItem key={mbti} value={mbti}>{mbti}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                  {errors.partnerMbti && <p className="text-xs text-destructive">{errors.partnerMbti.message}</p>}
+                </div>
 
-            <div className="space-y-2">
-              <Label>나의 성향</Label>
-              <Input {...register('myPersonality')} placeholder="예: 외향적, 감성적" />
-            </div>
+                <div className="space-y-2">
+                  <Label>나의 성향</Label>
+                  <Input {...register('myPersonality')} placeholder="예: 외향적, 감성적" />
+                </div>
 
-            <div className="space-y-2">
-              <Label>상대 성향</Label>
-              <Input {...register('partnerPersonality')} placeholder="예: 내향적, 논리적" />
-            </div>
+                <div className="space-y-2">
+                  <Label>상대 성향</Label>
+                  <Input {...register('partnerPersonality')} placeholder="예: 내향적, 논리적" />
+                </div>
 
-            <Button
-              type="submit"
-              className="w-full bg-pink-500 hover:bg-pink-600"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <>
-                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  분석 중...
-                </>
-              ) : (
-                '💕 궁합 분석하기'
-              )}
-            </Button>
-          </form>
+                <Button
+                  type="submit"
+                  className="w-full shadow-neo hover-neo"
+                  disabled={isLoading}
+                >
+                  {isLoading ? (
+                    <>
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      분석 중...
+                    </>
+                  ) : (
+                    '궁합 분석하기'
+                  )}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-center py-4">
@@ -141,7 +146,7 @@ export default function CompatibilityPage() {
             <Button
               onClick={() => setResult(null)}
               variant="outline"
-              className="w-full"
+              className="w-full shadow-neo hover-neo"
             >
               다시 분석하기
             </Button>

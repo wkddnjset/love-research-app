@@ -35,9 +35,11 @@ export interface ExPartner {
   mbti?: string;
   personality?: string;
   conflictTypes: string[];
+  conflictDetail?: string;
   breakupReason?: string;
-  satisfactionScore: number;
   relationshipDuration?: number;
+  styleAnswers: Record<string, string>;
+  goodPoints?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -114,8 +116,8 @@ export interface Subscription {
   id: string;
   userId: string;
   plan: 'free' | 'premium';
-  stripePaymentLinkId?: string;
-  stripeCustomerId?: string;
+  paddleSubscriptionId?: string;
+  paddleCustomerId?: string;
   status: 'active' | 'cancelled' | 'expired';
   currentPeriodStart?: string;
   currentPeriodEnd?: string;

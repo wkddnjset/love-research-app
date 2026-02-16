@@ -10,18 +10,19 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
+import { Card, CardContent } from '@/components/ui/card';
 import MobileHeader from '@/components/layout/MobileHeader';
 import ScoreGauge from '@/features/analysis/components/ScoreGauge';
 import ResultCard from '@/features/analysis/components/ResultCard';
 import { someInputSchema, type SomeInputFormData } from '@/types/schemas/analysis';
-import { useDataStore } from '@/stores/dataStore';
+import { useAnalysisHistory } from '@/hooks/useSupabaseData';
 
 import type { SomeResult } from '@/types';
 
 export default function SomePage() {
   const [result, setResult] = useState<SomeResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { addAnalysisResult } = useDataStore();
+  const { addAnalysisResult } = useAnalysisHistory();
 
   const { register, handleSubmit, formState: { errors } } = useForm<SomeInputFormData>({
     resolver: zodResolver(someInputSchema),
@@ -38,7 +39,7 @@ export default function SomePage() {
       if (!res.ok) throw new Error('분석 실패');
       const json = await res.json();
       setResult(json);
-      addAnalysisResult('some', data as unknown as Record<string, unknown>, json, json.successProbability);
+      await addAnalysisResult({ moduleType: 'some', inputData: data as unknown as Record<string, unknown>, result: json, score: json.successProbability });
     } catch {
       toast.error('분석 중 오류가 발생했습니다.');
     } finally {
@@ -51,31 +52,35 @@ export default function SomePage() {
       <MobileHeader title="썸 성공 확률" showBack />
       <div className="space-y-6 px-4 py-4">
         {!result ? (
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-            <div className="space-y-2">
-              <Label>만난 횟수 *</Label>
-              <Input type="number" {...register('meetCount', { valueAsNumber: true })} placeholder="예: 5" />
-              {errors.meetCount && <p className="text-xs text-red-500">{errors.meetCount.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>연락 빈도 *</Label>
-              <Input {...register('contactFrequency')} placeholder="예: 매일, 이틀에 한번" />
-              {errors.contactFrequency && <p className="text-xs text-red-500">{errors.contactFrequency.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>답장 속도 *</Label>
-              <Input {...register('replySpeed')} placeholder="예: 30분 이내, 1시간 이내" />
-              {errors.replySpeed && <p className="text-xs text-red-500">{errors.replySpeed.message}</p>}
-            </div>
-            <div className="space-y-2">
-              <Label>상대 행동 패턴 *</Label>
-              <Textarea {...register('partnerBehavior')} placeholder="상대가 보이는 행동을 설명해주세요" rows={3} />
-              {errors.partnerBehavior && <p className="text-xs text-red-500">{errors.partnerBehavior.message}</p>}
-            </div>
-            <Button type="submit" className="w-full bg-pink-500 hover:bg-pink-600" disabled={isLoading}>
-              {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />분석 중...</> : '🦋 분석하기'}
-            </Button>
-          </form>
+          <Card className="shadow-neo">
+            <CardContent className="p-5">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                <div className="space-y-2">
+                  <Label>만난 횟수 *</Label>
+                  <Input type="number" {...register('meetCount', { valueAsNumber: true })} placeholder="예: 5" />
+                  {errors.meetCount && <p className="text-xs text-destructive">{errors.meetCount.message}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label>연락 빈도 *</Label>
+                  <Input {...register('contactFrequency')} placeholder="예: 매일, 이틀에 한번" />
+                  {errors.contactFrequency && <p className="text-xs text-destructive">{errors.contactFrequency.message}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label>답장 속도 *</Label>
+                  <Input {...register('replySpeed')} placeholder="예: 30분 이내, 1시간 이내" />
+                  {errors.replySpeed && <p className="text-xs text-destructive">{errors.replySpeed.message}</p>}
+                </div>
+                <div className="space-y-2">
+                  <Label>상대 행동 패턴 *</Label>
+                  <Textarea {...register('partnerBehavior')} placeholder="상대가 보이는 행동을 설명해주세요" rows={3} />
+                  {errors.partnerBehavior && <p className="text-xs text-destructive">{errors.partnerBehavior.message}</p>}
+                </div>
+                <Button type="submit" className="w-full shadow-neo hover-neo" disabled={isLoading}>
+                  {isLoading ? <><Loader2 className="mr-2 h-4 w-4 animate-spin" />분석 중...</> : '분석하기'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
         ) : (
           <div className="space-y-4">
             <div className="flex justify-center py-4">
@@ -90,7 +95,7 @@ export default function SomePage() {
             <ResultCard title="다음 액션" icon="👉">
               <p>{result.nextAction}</p>
             </ResultCard>
-            <Button onClick={() => setResult(null)} variant="outline" className="w-full">다시 분석하기</Button>
+            <Button onClick={() => setResult(null)} variant="outline" className="w-full shadow-neo hover-neo">다시 분석하기</Button>
           </div>
         )}
       </div>

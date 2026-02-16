@@ -23,7 +23,7 @@ export default function MobileHeader({
   return (
     <header
       className={cn(
-        'sticky top-0 z-40 flex h-14 items-center border-b bg-white px-4',
+        'sticky top-0 z-40 flex h-14 items-center border-b border-border bg-background/80 backdrop-blur-md px-4',
         className
       )}
     >
@@ -31,14 +31,16 @@ export default function MobileHeader({
         {showBack && (
           <button
             onClick={() => router.back()}
-            className="flex items-center justify-center rounded-full p-1 transition-colors hover:bg-gray-100"
+            className="flex items-center justify-center rounded-full p-1 transition-colors hover:bg-accent"
             aria-label="뒤로가기"
           >
-            <ChevronLeft className="h-6 w-6" />
+            <ChevronLeft className="h-6 w-6 text-foreground" />
           </button>
         )}
       </div>
-      <h1 className="flex-1 text-center text-lg font-semibold">{title}</h1>
+      <h1 className="flex-1 text-center text-lg font-bold tracking-tight text-foreground truncate">
+        {title}
+      </h1>
       <div className="flex w-10 items-center justify-end">{rightAction}</div>
     </header>
   );

@@ -1,0 +1,45 @@
+{
+  "version": "2.0",
+  "lastUpdated": "2026-02-16T03:00:00.000Z",
+  "activeFeatures": ["love-research"],
+  "primaryFeature": "love-research",
+  "features": {
+    "love-research": {
+      "phase": "do",
+      "matchRate": null,
+      "iterationCount": 0,
+      "startedAt": "2026-02-16T02:35:00.000Z",
+      "documents": {
+        "plan": "docs/01-plan/features/love-research.plan.md",
+        "design": "docs/02-design/features/love-research.design.md"
+      }
+    }
+  },
+  "pipeline": {
+    "currentPhase": 1,
+    "level": "Dynamic",
+    "phaseHistory": []
+  },
+  "session": {
+    "startedAt": "2026-02-16T02:31:34.375Z",
+    "onboardingCompleted": true,
+    "lastActivity": "2026-02-16T03:00:00.000Z"
+  },
+  "history": [
+    {
+      "action": "plan_created",
+      "feature": "love-research",
+      "timestamp": "2026-02-16T02:35:00.000Z"
+    },
+    {
+      "action": "design_created",
+      "feature": "love-research",
+      "timestamp": "2026-02-16T02:45:00.000Z"
+    },
+    {
+      "action": "do_started",
+      "feature": "love-research",
+      "timestamp": "2026-02-16T03:00:00.000Z"
+    }
+  ]
+}

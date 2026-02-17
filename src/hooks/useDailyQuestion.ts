@@ -9,18 +9,17 @@ function useUserId() {
   return useAuthStore((s) => s.user?.id);
 }
 
-export function useTodayQuestion() {
+export function useQuestionForDate(date: string) {
   const supabase = createClient();
-  const today = new Date().toISOString().split('T')[0];
 
   return useQuery({
-    queryKey: ['daily_question', today],
+    queryKey: ['daily_question', date],
     queryFn: async () => {
-      // 오늘 날짜에 예약된 질문 우선
+      // 해당 날짜에 예약된 질문 우선
       const { data: scheduled } = await supabase
         .from('daily_questions')
         .select('*')
-        .eq('scheduled_date', today)
+        .eq('scheduled_date', date)
         .eq('is_active', true)
         .limit(1)
         .single();
@@ -36,14 +35,20 @@ export function useTodayQuestion() {
 
       if (!pool || pool.length === 0) return null;
 
-      const dayNum = Math.floor(new Date(today).getTime() / 86400000);
+      const dayNum = Math.floor(new Date(date).getTime() / 86400000);
       const idx = dayNum % pool.length;
       return mapQuestion(pool[idx]);
     },
   });
 }
 
-export function useTodayAnswer(questionId?: string) {
+export function useTodayQuestion() {
+  const d = new Date();
+  const today = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  return useQuestionForDate(today);
+}
+
+export function useAnswerForQuestion(questionId?: string) {
   const userId = useUserId();
   const supabase = createClient();
 
@@ -63,6 +68,9 @@ export function useTodayAnswer(questionId?: string) {
     enabled: !!userId && !!questionId,
   });
 }
+
+// 기존 useTodayAnswer 호환 유지
+export const useTodayAnswer = useAnswerForQuestion;
 
 export function useSubmitAnswer() {
   const userId = useUserId();
@@ -88,7 +96,7 @@ export function useSubmitAnswer() {
   });
 }
 
-export function useRecentAnswers(limit = 7) {
+export function useRecentAnswers(limit = 10) {
   const userId = useUserId();
   const supabase = createClient();
 

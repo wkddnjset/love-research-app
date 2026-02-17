@@ -37,7 +37,7 @@ export default function ReportPage() {
   const [isLoading, setIsLoading] = useState(false);
   const { exPartners } = useExPartners();
   const { addAnalysisResult } = useAnalysisHistory();
-  const { data: recentAnswers } = useRecentAnswers(7);
+  const { data: recentAnswers } = useRecentAnswers(10);
   const { profile } = useAuthStore();
 
   const canUpdate = canUpdateReport(profile?.lastReportAt);
@@ -136,7 +136,7 @@ export default function ReportPage() {
                   {[
                     { label: 'MBTI', value: profile?.mbti || '미입력' },
                     { label: '과거 연애', value: `${exPartners.length}건` },
-                    { label: '데일리 답변', value: `${recentAnswers?.length ?? 0}건 (최근 7일)` },
+                    { label: '데일리 답변', value: `${recentAnswers?.length ?? 0}건 (최근 10개)` },
                   ].map((item) => (
                     <div key={item.label} className="flex items-center justify-between rounded-lg bg-muted/30 px-4 py-2.5">
                       <span className="text-sm text-muted-foreground">{item.label}</span>

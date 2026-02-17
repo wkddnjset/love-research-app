@@ -19,14 +19,13 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
 
-    // 최근 7일 데일리 답변 조회
-    const sevenDaysAgo = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString();
+    // 최근 답변 10개 조회 (날짜 기준이 아닌 실제 답변 기준)
     const { data: answers } = await supabase
       .from('daily_answers')
       .select('*, daily_questions(*)')
       .eq('user_id', user.id)
-      .gte('created_at', sevenDaysAgo)
-      .order('created_at', { ascending: false });
+      .order('created_at', { ascending: false })
+      .limit(10);
 
     const dailyAnswers = (answers ?? []).map((a: Record<string, unknown>) => {
       const q = a.daily_questions as Record<string, unknown> | null;

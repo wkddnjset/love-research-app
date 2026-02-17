@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-17T12:51:31.922Z",
+  "lastUpdated": "2026-02-17T13:28:14.440Z",
   "activeFeatures": [
     "love-research",
     "love-research-app",
@@ -65,9 +65,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:53:37.297Z",
-        "lastUpdated": "2026-02-17T12:51:31.922Z"
+        "lastUpdated": "2026-02-17T13:28:14.440Z"
       },
-      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/types/index.ts"
+      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/hooks/useDailyQuestion.ts"
     },
     "schemas": {
       "phase": "do",
@@ -377,9 +377,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:58:44.141Z",
-        "lastUpdated": "2026-02-17T12:49:37.454Z"
+        "lastUpdated": "2026-02-17T13:23:29.625Z"
       },
-      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/api/analysis/report/route.ts"
+      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/(main)/analysis/report/page.tsx"
     },
     "stripe": {
       "phase": "do",
@@ -533,7 +533,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-17T11:23:41.440Z",
-        "lastUpdated": "2026-02-17T11:43:42.663Z"
+        "lastUpdated": "2026-02-17T13:28:04.006Z"
       },
       "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/(main)/data/daily/page.tsx"
     },
@@ -585,7 +585,7 @@
   "session": {
     "startedAt": "2026-02-16T02:31:34.375Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-17T12:51:31.922Z"
+    "lastActivity": "2026-02-17T13:28:14.440Z"
   },
   "history": [
     {
@@ -2621,6 +2621,48 @@
     },
     {
       "timestamp": "2026-02-17T12:51:31.922Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:21:50.312Z",
+      "feature": "report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:22:18.213Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:23:14.023Z",
+      "feature": "daily",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:23:23.853Z",
+      "feature": "report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:23:29.625Z",
+      "feature": "report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:28:04.006Z",
+      "feature": "daily",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:28:14.440Z",
       "feature": "love-research-app",
       "phase": "do",
       "action": "updated"

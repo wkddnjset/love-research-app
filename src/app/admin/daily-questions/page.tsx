@@ -111,7 +111,7 @@ export default function AdminDailyQuestionsPage() {
         ) : (
           <div className="space-y-4">
             {questions.map((q) => (
-              <Card key={q.id} className="border border-border shadow-neo overflow-hidden rounded-lg">
+              <Card key={q.id} className="border border-border shadow-neo overflow-hidden rounded-lg p-0">
                 <CardContent className="flex items-start justify-between gap-6 p-5">
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2 mb-2">

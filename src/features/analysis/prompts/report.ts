@@ -1,3 +1,22 @@
+const WEIGHT_LABELS = ['완전', '적당히', '적당히', '완전'] as const;
+const DIMENSIONS = [
+  { left: 'E', right: 'I' },
+  { left: 'N', right: 'S' },
+  { left: 'F', right: 'T' },
+  { left: 'J', right: 'P' },
+] as const;
+
+export function formatMbtiDetail(mbti?: string, weights?: number[]): string {
+  if (!mbti) return '미입력';
+  if (!weights || weights.length !== 4) return mbti;
+  const details = weights.map((w, i) => {
+    const dim = DIMENSIONS[i];
+    const letter = w <= 1 ? dim.left : dim.right;
+    return `${WEIGHT_LABELS[w]} ${letter}`;
+  }).join(', ');
+  return `${mbti} (${details})`;
+}
+
 export const REPORT_SYSTEM_PROMPT = `당신은 전문 연애 심리 분석가입니다.
 사용자의 누적된 연애 데이터를 종합 분석하여 연애 성향 리포트를 작성합니다.
 
@@ -14,6 +33,7 @@ export const REPORT_SYSTEM_PROMPT = `당신은 전문 연애 심리 분석가입
 
 export function buildReportPrompt(userData: {
   mbti?: string;
+  mbtiWeights?: number[];
   exPartners: Array<{
     nickname?: string;
     mbti?: string;
@@ -44,7 +64,7 @@ export function buildReportPrompt(userData: {
     `[${a.keyword}] Q: ${a.question} → A: ${a.answer}`
   ).join('\n');
 
-  return `나의 MBTI: ${userData.mbti || '미입력'}
+  return `나의 MBTI: ${formatMbtiDetail(userData.mbti, userData.mbtiWeights)}
 전 애인 수: ${userData.exPartners.length}명
 ${exSummary || '과거 연애 데이터 없음'}
 
@@ -55,7 +75,7 @@ ${dailySummary || '답변 데이터 없음'}
 }
 
 // 템플릿 변수 플레이스홀더를 사용하는 유저 프롬프트 템플릿
-export const REPORT_USER_PROMPT_TEMPLATE = `나의 MBTI: {{mbti}}
+export const REPORT_USER_PROMPT_TEMPLATE = `나의 MBTI: {{mbtiDetail}}
 전 애인 수: {{exPartnerCount}}명
 {{exSummary}}
 
@@ -67,6 +87,7 @@ export const REPORT_USER_PROMPT_TEMPLATE = `나의 MBTI: {{mbti}}
 // 데이터로부터 템플릿 변수 맵 생성
 export function buildReportVariables(userData: {
   mbti?: string;
+  mbtiWeights?: number[];
   exPartners: Array<{
     nickname?: string;
     mbti?: string;
@@ -99,6 +120,7 @@ export function buildReportVariables(userData: {
 
   return {
     mbti: userData.mbti || '미입력',
+    mbtiDetail: formatMbtiDetail(userData.mbti, userData.mbtiWeights),
     exPartnerCount: String(userData.exPartners.length),
     exSummary: exSummary || '과거 연애 데이터 없음',
     dailySummary: dailySummary || '답변 데이터 없음',

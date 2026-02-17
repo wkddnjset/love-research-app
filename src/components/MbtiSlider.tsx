@@ -12,48 +12,47 @@ const DIMENSIONS = [
 ] as const;
 
 function mbtiToValues(mbti: string): number[] {
-  if (!mbti || mbti.length !== 4) return [2, 2, 2, 2];
+  if (!mbti || mbti.length !== 4) return [0, 0, 0, 0];
   return DIMENSIONS.map((dim, i) => {
     const letter = mbti[i].toUpperCase();
     if (letter === dim.left) return 1;
-    if (letter === dim.right) return 3;
-    return 2;
+    if (letter === dim.right) return 2;
+    return 0;
   });
 }
 
 function valuesToMbti(values: number[]): string {
   return DIMENSIONS.map((dim, i) => {
     if (values[i] <= 1) return dim.left;
-    if (values[i] >= 3) return dim.right;
-    return dim.left;
+    return dim.right;
   }).join('');
 }
 
 function getValueLabel(dim: typeof DIMENSIONS[number], val: number): string {
   switch (val) {
-    case 0: return `강한 ${dim.left}`;
-    case 1: return dim.left;
-    case 2: return '중립';
-    case 3: return dim.right;
-    case 4: return `강한 ${dim.right}`;
-    default: return '중립';
+    case 0: return `완전 ${dim.leftLabel}`;
+    case 1: return `적당히 ${dim.leftLabel}`;
+    case 2: return `적당히 ${dim.rightLabel}`;
+    case 3: return `완전 ${dim.rightLabel}`;
+    default: return dim.leftLabel;
   }
 }
 
 interface MbtiSliderProps {
   value: string;
-  onChange: (mbti: string) => void;
+  weights?: number[];
+  onChange: (mbti: string, weights?: number[]) => void;
 }
 
-export default function MbtiSlider({ value, onChange }: MbtiSliderProps) {
-  const [values, setValues] = useState(() => mbtiToValues(value));
+export default function MbtiSlider({ value, weights, onChange }: MbtiSliderProps) {
+  const [values, setValues] = useState(() => weights?.length === 4 ? weights : mbtiToValues(value));
 
   const handleChange = useCallback(
     (dimIndex: number, level: number) => {
       const next = [...values];
       next[dimIndex] = level;
       setValues(next);
-      onChange(valuesToMbti(next));
+      onChange(valuesToMbti(next), next);
     },
     [values, onChange],
   );
@@ -66,8 +65,8 @@ export default function MbtiSlider({ value, onChange }: MbtiSliderProps) {
       <div className="space-y-5 pt-2">
         {DIMENSIONS.map((dim, di) => {
           const val = values[di];
-          // Position percentage for the filled bar (0=0%, 1=25%, 2=50%, 3=75%, 4=100%)
-          const pos = val * 25;
+          // Position percentage for the filled bar (0=0%, 1=33.3%, 2=66.7%, 3=100%)
+          const pos = (val / 3) * 100;
 
           return (
             <div key={dim.left + dim.right} className="rounded-xl border border-border bg-card/50 p-4">
@@ -84,7 +83,7 @@ export default function MbtiSlider({ value, onChange }: MbtiSliderProps) {
                 </span>
                 <span className={cn(
                   'flex items-center gap-1.5 text-sm font-bold transition-colors',
-                  val >= 3 ? 'text-primary' : 'text-muted-foreground',
+                  val >= 2 ? 'text-primary' : 'text-muted-foreground',
                 )}>
                   {dim.rightLabel}
                   <span className="flex h-7 w-7 items-center justify-center rounded-lg border border-border bg-background text-xs font-bold">
@@ -107,11 +106,10 @@ export default function MbtiSlider({ value, onChange }: MbtiSliderProps) {
                   }}
                 />
 
-                {/* 5 dot buttons - each in a fixed-size cell to prevent layout shift */}
+                {/* 4 dot buttons */}
                 <div className="relative z-10 flex w-full items-center justify-between">
-                  {[0, 1, 2, 3, 4].map((level) => {
+                  {[0, 1, 2, 3].map((level) => {
                     const isSelected = val === level;
-                    const isCenter = level === 2;
 
                     return (
                       <div key={level} className="flex h-8 w-8 items-center justify-center">
@@ -122,9 +120,7 @@ export default function MbtiSlider({ value, onChange }: MbtiSliderProps) {
                             'relative flex items-center justify-center rounded-full transition-all duration-200',
                             isSelected
                               ? 'h-8 w-8 border-2 border-primary bg-primary shadow-neo'
-                              : isCenter
-                                ? 'h-5 w-5 border-2 border-muted-foreground/40 bg-background hover:border-primary/60'
-                                : 'h-4 w-4 border-2 border-muted-foreground/30 bg-background hover:border-primary/60',
+                              : 'h-4 w-4 border-2 border-muted-foreground/30 bg-background hover:border-primary/60',
                           )}
                           aria-label={getValueLabel(dim, level)}
                         >

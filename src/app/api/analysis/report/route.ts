@@ -38,6 +38,7 @@ export async function POST(request: NextRequest) {
 
     const userData = {
       mbti: body.mbti,
+      mbtiWeights: body.mbtiWeights as number[] | undefined,
       exPartners: body.exPartners || [],
       dailyAnswers,
     };

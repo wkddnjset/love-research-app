@@ -34,6 +34,7 @@ const MODULE_CONFIGS: Record<ModuleType, ModuleConfig> = {
     defaultUser: REPORT_USER_PROMPT_TEMPLATE,
     variables: [
       { name: 'mbti', description: '사용자의 MBTI (미입력 시 "미입력")' },
+      { name: 'mbtiDetail', description: 'MBTI + 차원별 가중치 (예: "ENFP (E 매우 강함, N 약간, F 약간, P 매우 강함)")' },
       { name: 'exPartnerCount', description: '전 애인 수' },
       { name: 'exSummary', description: '전 애인 정보 요약 (MBTI, 이별사유, 갈등유형 등)' },
       { name: 'dailySummary', description: '최근 7일 데일리 질문 답변 요약' },
@@ -54,10 +55,12 @@ const MODULE_CONFIGS: Record<ModuleType, ModuleConfig> = {
     defaultUser: COMPATIBILITY_USER_PROMPT_TEMPLATE,
     variables: [
       { name: 'myMbti', description: '유저 A의 MBTI' },
+      { name: 'myMbtiDetail', description: '유저 A의 MBTI + 차원별 가중치' },
       { name: 'myGender', description: '유저 A의 성별' },
       { name: 'myLoveStyle', description: '유저 A의 연애 스타일' },
       { name: 'myExData', description: '유저 A의 과거 연애 데이터' },
       { name: 'partnerMbti', description: '유저 B의 MBTI' },
+      { name: 'partnerMbtiDetail', description: '유저 B의 MBTI + 차원별 가중치' },
       { name: 'partnerGender', description: '유저 B의 성별' },
       { name: 'partnerLoveStyle', description: '유저 B의 연애 스타일' },
       { name: 'partnerExData', description: '유저 B의 과거 연애 데이터' },

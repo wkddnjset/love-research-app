@@ -12,6 +12,7 @@ function mapProfile(data: Record<string, unknown>): UserProfile {
     userId: data.user_id as string,
     userCode: data.user_code as string,
     mbti: (data.mbti as string) ?? undefined,
+    mbtiWeights: (data.mbti_weights as number[]) ?? undefined,
     birthYear: (data.birth_year as number) ?? undefined,
     gender: (data.gender as UserProfile['gender']) ?? undefined,
     loveStyle: (data.love_style as string) ?? undefined,

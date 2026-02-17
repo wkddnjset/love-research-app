@@ -53,6 +53,7 @@ export default function ReportPage() {
     try {
       const inputData = {
         mbti: profile?.mbti || null,
+        mbtiWeights: profile?.mbtiWeights || null,
         exPartners: exPartners.map((p) => ({
           nickname: p.nickname,
           mbti: p.mbti,

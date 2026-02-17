@@ -16,6 +16,7 @@ import { createClient } from '@/lib/supabase/client';
 export default function ProfilePage() {
   const { user, profile, setProfile } = useAuthStore();
   const [mbti, setMbti] = useState('');
+  const [mbtiWeights, setMbtiWeights] = useState<number[]>([]);
   const [birthYear, setBirthYear] = useState('');
   const [gender, setGender] = useState('');
   const [loveStyle, setLoveStyle] = useState('');
@@ -24,6 +25,7 @@ export default function ProfilePage() {
   useEffect(() => {
     if (profile) {
       setMbti(profile.mbti ?? '');
+      setMbtiWeights(profile.mbtiWeights ?? []);
       setBirthYear(profile.birthYear ? String(profile.birthYear) : '');
       setGender(profile.gender ?? '');
       setLoveStyle(profile.loveStyle ?? '');
@@ -38,6 +40,7 @@ export default function ProfilePage() {
       const profileData = {
         user_id: user.id,
         mbti: mbti || null,
+        mbti_weights: mbtiWeights.length === 4 ? mbtiWeights : null,
         birth_year: birthYear ? Number(birthYear) : null,
         gender: gender || null,
         love_style: loveStyle || null,
@@ -56,6 +59,7 @@ export default function ProfilePage() {
         userId: data.user_id,
         userCode: data.user_code ?? '',
         mbti: data.mbti ?? undefined,
+        mbtiWeights: (data.mbti_weights as number[]) ?? undefined,
         birthYear: data.birth_year ?? undefined,
         gender: data.gender ?? undefined,
         loveStyle: data.love_style ?? undefined,
@@ -79,7 +83,7 @@ export default function ProfilePage() {
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 px-4 pb-8 pt-4">
         <Card className="overflow-hidden border border-border shadow-neo rounded-2xl">
           <CardContent className="p-5 space-y-6">
-            <MbtiSlider value={mbti} onChange={setMbti} />
+            <MbtiSlider value={mbti} weights={mbtiWeights} onChange={(m, w) => { setMbti(m); if (w) setMbtiWeights(w); }} />
 
             <div className="h-px bg-border" />
 

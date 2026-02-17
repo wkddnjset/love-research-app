@@ -67,6 +67,7 @@ export async function POST(request: NextRequest) {
 
     const inputData = {
       myMbti: myProfile?.mbti || '미입력',
+      myMbtiWeights: (myProfile?.mbti_weights as number[]) ?? undefined,
       myGender: myProfile?.gender || '미입력',
       myLoveStyle: myProfile?.love_style || '미입력',
       myExPartners: (myExPartners ?? []).map((p) => ({
@@ -76,6 +77,7 @@ export async function POST(request: NextRequest) {
         styleAnswers: p.style_answers,
       })),
       partnerMbti: targetProfile.mbti || '미입력',
+      partnerMbtiWeights: (targetProfile.mbti_weights as number[]) ?? undefined,
       partnerGender: targetProfile.gender || '미입력',
       partnerLoveStyle: targetProfile.love_style || '미입력',
       partnerExPartners: (targetExPartners ?? []).map((p) => ({

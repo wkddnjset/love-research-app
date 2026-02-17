@@ -1,6 +1,6 @@
 {
   "version": "2.0",
-  "lastUpdated": "2026-02-17T13:28:14.440Z",
+  "lastUpdated": "2026-02-17T13:50:14.999Z",
   "activeFeatures": [
     "love-research",
     "love-research-app",
@@ -65,9 +65,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:53:37.297Z",
-        "lastUpdated": "2026-02-17T13:28:14.440Z"
+        "lastUpdated": "2026-02-17T13:46:07.711Z"
       },
-      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/hooks/useDailyQuestion.ts"
+      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/components/MbtiSlider.tsx"
     },
     "schemas": {
       "phase": "do",
@@ -182,9 +182,9 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:56:28.892Z",
-        "lastUpdated": "2026-02-17T12:49:18.612Z"
+        "lastUpdated": "2026-02-17T13:46:17.688Z"
       },
-      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/features/analysis/prompts/loader.ts"
+      "lastFile": "/Users/seojang-won/Dev/love-research-app/src/features/analysis/prompts/report.ts"
     },
     "data": {
       "phase": "do",
@@ -273,7 +273,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:57:25.891Z",
-        "lastUpdated": "2026-02-17T11:44:45.620Z"
+        "lastUpdated": "2026-02-17T13:39:16.297Z"
       },
       "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/(main)/mypage/profile/page.tsx"
     },
@@ -325,7 +325,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:58:31.009Z",
-        "lastUpdated": "2026-02-17T12:49:52.967Z"
+        "lastUpdated": "2026-02-17T13:41:19.524Z"
       },
       "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/api/analysis/compatibility/route.ts"
     },
@@ -377,7 +377,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T02:58:44.141Z",
-        "lastUpdated": "2026-02-17T13:23:29.625Z"
+        "lastUpdated": "2026-02-17T13:41:06.825Z"
       },
       "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/(main)/analysis/report/page.tsx"
     },
@@ -442,7 +442,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-16T03:06:15.801Z",
-        "lastUpdated": "2026-02-17T11:29:05.663Z"
+        "lastUpdated": "2026-02-17T13:50:14.999Z"
       },
       "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/(auth)/onboarding/page.tsx"
     },
@@ -572,7 +572,7 @@
       "documents": {},
       "timestamps": {
         "started": "2026-02-17T12:50:12.441Z",
-        "lastUpdated": "2026-02-17T12:51:03.506Z"
+        "lastUpdated": "2026-02-17T13:41:37.778Z"
       },
       "lastFile": "/Users/seojang-won/Dev/love-research-app/src/app/admin/prompts/page.tsx"
     }
@@ -585,7 +585,7 @@
   "session": {
     "startedAt": "2026-02-16T02:31:34.375Z",
     "onboardingCompleted": true,
-    "lastActivity": "2026-02-17T13:28:14.440Z"
+    "lastActivity": "2026-02-17T13:50:14.999Z"
   },
   "history": [
     {
@@ -2664,6 +2664,210 @@
     {
       "timestamp": "2026-02-17T13:28:14.440Z",
       "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:02.050Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:16.525Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:21.737Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:34.577Z",
+      "feature": "onboarding",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:40.698Z",
+      "feature": "onboarding",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:46.929Z",
+      "feature": "onboarding",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:51.395Z",
+      "feature": "onboarding",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:38:58.516Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:03.737Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:10.633Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:16.297Z",
+      "feature": "profile",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:32.244Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:37.686Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:43.191Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:48.388Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:39:53.487Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:00.403Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:05.587Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:12.411Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:17.472Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:24.516Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:32.675Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:37.928Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:44.845Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:40:58.969Z",
+      "feature": "report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:41:06.825Z",
+      "feature": "report",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:41:13.930Z",
+      "feature": "compatibility",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:41:19.524Z",
+      "feature": "compatibility",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:41:29.850Z",
+      "feature": "prompts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:41:37.778Z",
+      "feature": "prompts",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:45:48.558Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:46:07.711Z",
+      "feature": "love-research-app",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:46:17.688Z",
+      "feature": "analysis",
+      "phase": "do",
+      "action": "updated"
+    },
+    {
+      "timestamp": "2026-02-17T13:50:14.999Z",
+      "feature": "onboarding",
       "phase": "do",
       "action": "updated"
     }

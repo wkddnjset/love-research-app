@@ -19,6 +19,7 @@ export interface UserProfile {
   userId: string;
   userCode: string;
   mbti?: string;
+  mbtiWeights?: number[];
   birthYear?: number;
   gender?: 'male' | 'female' | 'other';
   loveStyle?: string;

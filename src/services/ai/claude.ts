@@ -19,5 +19,8 @@ export async function analyzeWithClaude(
   });
 
   const textBlock = message.content.find((block) => block.type === 'text');
-  return textBlock?.text || '';
+  const raw = textBlock?.text || '';
+  // AI가 ```json ... ``` 마크다운 블록으로 응답하는 경우 제거
+  const stripped = raw.replace(/^```(?:json)?\s*\n?/i, '').replace(/\n?```\s*$/,'');
+  return stripped;
 }

@@ -15,36 +15,41 @@ export const REPORT_SYSTEM_PROMPT = `당신은 전문 연애 심리 분석가입
 export function buildReportPrompt(userData: {
   mbti?: string;
   exPartners: Array<{
+    nickname?: string;
     mbti?: string;
-    satisfactionScore: number;
-    conflictTypes: string[];
+    styleAnswers?: Record<string, string>;
+    goodPoints?: string;
     breakupReason?: string;
+    conflictTypes?: string[];
   }>;
-  conflictRecords: Array<{
-    conflictType: string;
-    severity: number;
-  }>;
-  emotionRecords: Array<{
-    mood: string;
-    score: number;
+  dailyAnswers: Array<{
+    keyword: string;
+    question: string;
+    answer: string;
   }>;
 }): string {
-  const avgSatisfaction = userData.exPartners.length > 0
-    ? (userData.exPartners.reduce((acc, p) => acc + p.satisfactionScore, 0) / userData.exPartners.length).toFixed(1)
-    : '데이터 없음';
+  const exSummary = userData.exPartners.map((p, i) => {
+    const parts = [`전 애인 ${i + 1}: ${p.nickname || '익명'}`];
+    if (p.mbti) parts.push(`MBTI: ${p.mbti}`);
+    if (p.breakupReason) parts.push(`이별 사유: ${p.breakupReason}`);
+    if (p.goodPoints) parts.push(`좋았던 점: ${p.goodPoints}`);
+    if (p.conflictTypes?.length) parts.push(`갈등 유형: ${p.conflictTypes.join(', ')}`);
+    if (p.styleAnswers && Object.keys(p.styleAnswers).length > 0) {
+      parts.push(`소통 스타일: ${JSON.stringify(p.styleAnswers)}`);
+    }
+    return parts.join(' | ');
+  }).join('\n');
 
-  const avgEmotionScore = userData.emotionRecords.length > 0
-    ? (userData.emotionRecords.reduce((acc, e) => acc + e.score, 0) / userData.emotionRecords.length).toFixed(1)
-    : '데이터 없음';
+  const dailySummary = userData.dailyAnswers.map((a) =>
+    `[${a.keyword}] Q: ${a.question} → A: ${a.answer}`
+  ).join('\n');
 
   return `나의 MBTI: ${userData.mbti || '미입력'}
 전 애인 수: ${userData.exPartners.length}명
-전 애인 MBTI: ${userData.exPartners.map((p) => p.mbti || '모름').join(', ') || '없음'}
-평균 만족도: ${avgSatisfaction}
-주요 이별 사유: ${userData.exPartners.map((p) => p.breakupReason).filter(Boolean).join(', ') || '미입력'}
-주요 갈등 유형: ${[...new Set(userData.conflictRecords.map((c) => c.conflictType))].join(', ') || '없음'}
-평균 감정 점수: ${avgEmotionScore}
-기분 분포: ${userData.emotionRecords.map((e) => e.mood).join(', ') || '없음'}
+${exSummary || '과거 연애 데이터 없음'}
+
+최근 데일리 연애 질문 답변:
+${dailySummary || '답변 데이터 없음'}
 
 위 데이터를 바탕으로 나의 연애 성향을 종합 분석해주세요.`;
 }

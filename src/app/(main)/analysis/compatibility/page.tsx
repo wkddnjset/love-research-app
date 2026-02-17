@@ -1,31 +1,40 @@
 'use client';
 
 import { useState } from 'react';
+import Link from 'next/link';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Loader2 } from 'lucide-react';
+import { Loader2, Search, Share2, Copy, Check, UserRound, Sparkles, Heart, History } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
-import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import MobileHeader from '@/components/layout/MobileHeader';
 import ScoreGauge from '@/features/analysis/components/ScoreGauge';
 import ResultCard from '@/features/analysis/components/ResultCard';
 import { compatibilityInputSchema, type CompatibilityInputFormData } from '@/types/schemas/analysis';
-import { MBTI_OPTIONS } from '@/lib/constants';
-import { useAnalysisHistory } from '@/hooks/useSupabaseData';
+import { useUserCode } from '@/hooks/useUserCode';
 
-import type { CompatibilityResult } from '@/types';
+interface CompatResult {
+  found: boolean;
+  message?: string;
+  targetCode?: string;
+  targetMbti?: string;
+  score?: number;
+  strengths?: string[];
+  weaknesses?: string[];
+  cautions?: string[];
+  advice?: string;
+}
 
 export default function CompatibilityPage() {
-  const [result, setResult] = useState<CompatibilityResult | null>(null);
+  const [result, setResult] = useState<CompatResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const { addAnalysisResult } = useAnalysisHistory();
+  const [copied, setCopied] = useState(false);
+  const myCode = useUserCode();
 
-  const { register, handleSubmit, setValue, formState: { errors } } = useForm<CompatibilityInputFormData>({
+  const { register, handleSubmit, formState: { errors } } = useForm<CompatibilityInputFormData>({
     resolver: zodResolver(compatibilityInputSchema),
   });
 
@@ -37,119 +46,216 @@ export default function CompatibilityPage() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
-
-      if (!res.ok) throw new Error('분석 실패');
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error?.message || '분석 실패');
+      }
       const json = await res.json();
       setResult(json);
-      await addAnalysisResult({ moduleType: 'compatibility', inputData: data as unknown as Record<string, unknown>, result: json, score: json.score });
-    } catch {
-      toast.error('분석 중 오류가 발생했습니다. 다시 시도해주세요.');
+    } catch (e) {
+      toast.error(e instanceof Error ? e.message : '분석 중 오류가 발생했습니다.');
     } finally {
       setIsLoading(false);
     }
   };
 
+  const handleShare = async () => {
+    const shareUrl = `${window.location.origin}/invite/${myCode}`;
+    try {
+      await navigator.clipboard.writeText(shareUrl);
+      setCopied(true);
+      toast.success('링크가 복사되었습니다!');
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      toast.error('링크 복사에 실패했습니다.');
+    }
+  };
+
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <MobileHeader title="궁합 분석기" showBack />
 
-      <div className="space-y-6 px-4 py-4">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 space-y-5 px-4 pb-8 pt-4">
         {!result ? (
-          <Card className="shadow-neo">
-            <CardContent className="p-5">
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                <div className="space-y-2">
-                  <Label>나의 MBTI *</Label>
-                  <Select onValueChange={(v) => setValue('myMbti', v)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택해주세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {MBTI_OPTIONS.map((mbti) => (
-                        <SelectItem key={mbti} value={mbti}>{mbti}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.myMbti && <p className="text-xs text-destructive">{errors.myMbti.message}</p>}
+          <>
+            <div className="relative overflow-hidden rounded-2xl border border-sidebar-border bg-gradient-to-br from-sidebar via-sidebar to-primary/5 p-6 shadow-neo">
+              <div className="relative z-10">
+                <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-violet-500 to-purple-600 shadow-sm ring-2 ring-white/20">
+                  <Heart className="h-7 w-7 text-white" aria-hidden />
                 </div>
+                <h2 className="text-lg font-bold text-foreground">실제 데이터 기반 궁합 분석</h2>
+                <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                  상대방의 고유 코드를 입력하면
+                  <br />
+                  서로의 연애 데이터를 AI가 정밀 분석해요
+                </p>
+              </div>
+              <div className="absolute -right-4 -bottom-6 opacity-[0.06] dark:opacity-[0.1]" aria-hidden>
+                <Heart className="h-32 w-32 text-foreground rotate-12" fill="currentColor" />
+              </div>
+            </div>
 
-                <div className="space-y-2">
-                  <Label>상대 MBTI *</Label>
-                  <Select onValueChange={(v) => setValue('partnerMbti', v)}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="선택해주세요" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {MBTI_OPTIONS.map((mbti) => (
-                        <SelectItem key={mbti} value={mbti}>{mbti}</SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  {errors.partnerMbti && <p className="text-xs text-destructive">{errors.partnerMbti.message}</p>}
+            <Card className="overflow-hidden border border-border shadow-neo rounded-2xl">
+              <CardContent className="p-5">
+                <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                  <div className="space-y-2">
+                    <label className="flex items-center gap-2 text-sm font-bold text-foreground">
+                      <span className="flex h-6 w-6 items-center justify-center rounded-md bg-primary/10 text-primary">
+                        <UserRound className="h-3.5 w-3.5" aria-hidden />
+                      </span>
+                      상대방 코드
+                    </label>
+                    <Input
+                      {...register('targetCode')}
+                      placeholder="LR-A3X9K2"
+                      className="h-12 text-center font-mono text-lg tracking-widest uppercase"
+                      maxLength={9}
+                    />
+                    {errors.targetCode && (
+                      <p className="text-xs text-destructive">{errors.targetCode.message}</p>
+                    )}
+                  </div>
+
+                  <Button
+                    type="submit"
+                    className="w-full h-12 text-base font-bold shadow-neo hover-neo"
+                    disabled={isLoading}
+                  >
+                    {isLoading ? (
+                      <><Loader2 className="mr-2 h-5 w-5 animate-spin" />분석 중...</>
+                    ) : (
+                      <><Search className="mr-2 h-5 w-5" />궁합 분석하기</>
+                    )}
+                  </Button>
+                </form>
+              </CardContent>
+            </Card>
+
+            {/* 공유하기 섹션 */}
+            <Card className="overflow-hidden border border-dashed border-primary/30 bg-primary/5 rounded-2xl">
+              <CardContent className="p-5">
+                <div className="flex items-start gap-3">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-secondary text-secondary-foreground">
+                    <Share2 className="h-5 w-5" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-foreground">상대방에게 코드를 공유하세요</p>
+                    <p className="mt-0.5 text-xs text-muted-foreground leading-relaxed">
+                      미가입 상대에게 링크를 보내면 가입 후 바로 궁합을 확인할 수 있어요
+                    </p>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="mt-3 shadow-neo hover-neo"
+                      onClick={handleShare}
+                    >
+                      {copied ? <Check className="mr-1.5 h-4 w-4" /> : <Copy className="mr-1.5 h-4 w-4" />}
+                      {copied ? '복사됨!' : '초대 링크 복사'}
+                    </Button>
+                  </div>
                 </div>
-
-                <div className="space-y-2">
-                  <Label>나의 성향</Label>
-                  <Input {...register('myPersonality')} placeholder="예: 외향적, 감성적" />
-                </div>
-
-                <div className="space-y-2">
-                  <Label>상대 성향</Label>
-                  <Input {...register('partnerPersonality')} placeholder="예: 내향적, 논리적" />
-                </div>
-
-                <Button
-                  type="submit"
-                  className="w-full shadow-neo hover-neo"
-                  disabled={isLoading}
-                >
-                  {isLoading ? (
-                    <>
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                      분석 중...
-                    </>
-                  ) : (
-                    '궁합 분석하기'
-                  )}
-                </Button>
-              </form>
+              </CardContent>
+            </Card>
+          </>
+        ) : result.found === false ? (
+          <Card className="overflow-hidden border border-border shadow-neo-md rounded-2xl">
+            <CardContent className="flex flex-col items-center py-10 p-5 text-center">
+              <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-muted">
+                <UserRound className="h-8 w-8 text-muted-foreground" />
+              </div>
+              <h2 className="mt-4 text-lg font-bold text-foreground">아직 가입하지 않은 사용자예요</h2>
+              <p className="mt-2 text-sm text-muted-foreground leading-relaxed">
+                링크를 공유해 상대방을 초대하면
+                <br />
+                궁합 분석을 시작할 수 있어요!
+              </p>
+              <Button
+                className="mt-6 shadow-neo hover-neo"
+                onClick={handleShare}
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                초대 링크 공유하기
+              </Button>
+              <Button
+                variant="ghost"
+                className="mt-2"
+                onClick={() => setResult(null)}
+              >
+                다른 코드로 시도
+              </Button>
             </CardContent>
           </Card>
         ) : (
           <div className="space-y-4">
-            <div className="flex justify-center py-4">
-              <ScoreGauge score={result.score} label="궁합 점수" size="lg" />
+            <div className="relative overflow-hidden rounded-2xl border border-primary/25 bg-gradient-to-b from-primary/10 to-background p-6 text-center shadow-neo">
+              <Sparkles className="absolute top-3 right-3 h-5 w-5 text-primary/30" />
+              <p className="text-xs font-medium text-muted-foreground tracking-wide uppercase">Compatibility Score</p>
+              <div className="mt-3 flex justify-center">
+                <ScoreGauge score={result.score ?? 0} label="" size="lg" />
+              </div>
+              <p className="mt-2 text-sm text-muted-foreground">
+                상대 MBTI: <span className="font-bold text-foreground">{result.targetMbti || '비공개'}</span>
+              </p>
             </div>
 
-            <ResultCard title="강점" icon="💪">
-              <ul className="list-disc space-y-1 pl-4">
-                {result.strengths.map((s, i) => <li key={i}>{s}</li>)}
+            <ResultCard title="우리의 강점" icon="💪">
+              <ul className="space-y-1.5">
+                {result.strengths?.map((s, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-green-500" />
+                    <span>{s}</span>
+                  </li>
+                ))}
               </ul>
             </ResultCard>
 
-            <ResultCard title="약점" icon="⚠️">
-              <ul className="list-disc space-y-1 pl-4">
-                {result.weaknesses.map((w, i) => <li key={i}>{w}</li>)}
+            <ResultCard title="주의할 점" icon="⚡">
+              <ul className="space-y-1.5">
+                {result.weaknesses?.map((w, i) => (
+                  <li key={i} className="flex items-start gap-2">
+                    <span className="mt-1 h-1.5 w-1.5 shrink-0 rounded-full bg-orange-500" />
+                    <span>{w}</span>
+                  </li>
+                ))}
               </ul>
             </ResultCard>
 
-            <ResultCard title="주의 포인트" icon="🚨">
-              <ul className="list-disc space-y-1 pl-4">
-                {result.cautions.map((c, i) => <li key={i}>{c}</li>)}
-              </ul>
+            <ResultCard title="꼭 기억하세요" icon="💡">
+              <p className="leading-relaxed">{result.advice}</p>
             </ResultCard>
 
-            <ResultCard title="조언" icon="💡">
-              <p>{result.advice}</p>
-            </ResultCard>
+            <Link href="/mypage/history" className="block">
+              <Card className="group overflow-hidden border border-border bg-muted/20 hover-neo cursor-pointer rounded-2xl transition-all">
+                <CardContent className="flex items-center gap-3 p-4">
+                  <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+                    <History className="h-4 w-4" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm font-bold text-foreground">분석 히스토리</p>
+                    <p className="text-xs text-muted-foreground">과거 분석 결과를 확인하세요</p>
+                  </div>
+                  <span className="text-xs font-medium text-primary shrink-0">보기 &rarr;</span>
+                </CardContent>
+              </Card>
+            </Link>
 
-            <Button
-              onClick={() => setResult(null)}
-              variant="outline"
-              className="w-full shadow-neo hover-neo"
-            >
-              다시 분석하기
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1 shadow-neo hover-neo"
+                onClick={handleShare}
+              >
+                <Share2 className="mr-2 h-4 w-4" />
+                결과 공유
+              </Button>
+              <Button
+                variant="outline"
+                className="flex-1 shadow-neo hover-neo"
+                onClick={() => setResult(null)}
+              >
+                다시 분석
+              </Button>
+            </div>
           </div>
         )}
       </div>

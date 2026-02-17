@@ -54,10 +54,12 @@ export default function ProfilePage() {
       setProfile({
         id: data.id,
         userId: data.user_id,
+        userCode: data.user_code ?? '',
         mbti: data.mbti ?? undefined,
         birthYear: data.birth_year ?? undefined,
         gender: data.gender ?? undefined,
         loveStyle: data.love_style ?? undefined,
+        lastReportAt: data.last_report_at ?? undefined,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
       });
@@ -71,11 +73,11 @@ export default function ProfilePage() {
   };
 
   return (
-    <div>
+    <div className="min-h-screen bg-gradient-to-b from-background to-muted/20">
       <MobileHeader title="프로필 편집" showBack />
 
-      <div className="px-4 py-4">
-        <Card className="shadow-neo">
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 px-4 pb-8 pt-4">
+        <Card className="overflow-hidden border border-border shadow-neo rounded-2xl">
           <CardContent className="p-5 space-y-6">
             <MbtiSlider value={mbti} onChange={setMbti} />
 
@@ -97,7 +99,7 @@ export default function ProfilePage() {
               className="w-full shadow-neo hover-neo"
             >
               {isSaving ? (
-                <><Loader2 className="mr-2 h-4 w-4 animate-spin" />저장 중...</>
+                <><Loader2 className="mr-2 h-4 w-4 animate-spin" aria-hidden />저장 중...</>
               ) : (
                 '저장하기'
               )}

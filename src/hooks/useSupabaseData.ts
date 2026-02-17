@@ -6,8 +6,6 @@ import { useAuthStore } from '@/stores/authStore';
 import type {
   ExPartner,
   CurrentRelationship,
-  ConflictRecord,
-  EmotionRecord,
   AnalysisResult,
   AnalysisModuleType,
 } from '@/types';
@@ -216,144 +214,6 @@ function mapRelationship(row: Record<string, unknown>): CurrentRelationship {
 }
 
 // ============================================
-// Conflicts
-// ============================================
-export function useConflicts() {
-  const userId = useUserId();
-  const queryClient = useQueryClient();
-  const supabase = createClient();
-
-  const query = useQuery({
-    queryKey: ['conflicts', userId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('conflict_records')
-        .select('*')
-        .eq('user_id', userId!)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return (data ?? []).map(mapConflict);
-    },
-    enabled: !!userId,
-  });
-
-  const addMutation = useMutation({
-    mutationFn: async (input: Omit<ConflictRecord, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
-      const { error } = await supabase.from('conflict_records').insert({
-        user_id: userId!,
-        relationship_id: input.relationshipId,
-        title: input.title,
-        description: input.description,
-        conflict_type: input.conflictType,
-        severity: input.severity,
-        is_resolved: input.isResolved,
-        resolved_at: input.resolvedAt ?? null,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['conflicts'] }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('conflict_records').delete().eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['conflicts'] }),
-  });
-
-  return {
-    conflicts: query.data ?? [],
-    isLoading: query.isLoading,
-    addConflict: addMutation.mutateAsync,
-    deleteConflict: deleteMutation.mutateAsync,
-  };
-}
-
-function mapConflict(row: Record<string, unknown>): ConflictRecord {
-  return {
-    id: row.id as string,
-    userId: row.user_id as string,
-    relationshipId: row.relationship_id as string,
-    title: row.title as string,
-    description: row.description as string,
-    conflictType: row.conflict_type as string,
-    severity: row.severity as 1 | 2 | 3 | 4 | 5,
-    isResolved: row.is_resolved as boolean,
-    resolvedAt: (row.resolved_at as string) ?? undefined,
-    createdAt: row.created_at as string,
-    updatedAt: row.updated_at as string,
-  };
-}
-
-// ============================================
-// Emotions
-// ============================================
-export function useEmotions() {
-  const userId = useUserId();
-  const queryClient = useQueryClient();
-  const supabase = createClient();
-
-  const query = useQuery({
-    queryKey: ['emotions', userId],
-    queryFn: async () => {
-      const { data, error } = await supabase
-        .from('emotion_records')
-        .select('*')
-        .eq('user_id', userId!)
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return (data ?? []).map(mapEmotion);
-    },
-    enabled: !!userId,
-  });
-
-  const addMutation = useMutation({
-    mutationFn: async (input: Omit<EmotionRecord, 'id' | 'userId' | 'createdAt' | 'updatedAt'>) => {
-      const { error } = await supabase.from('emotion_records').insert({
-        user_id: userId!,
-        relationship_id: input.relationshipId ?? null,
-        mood: input.mood,
-        score: input.score,
-        content: input.content,
-        tags: input.tags,
-      });
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['emotions'] }),
-  });
-
-  const deleteMutation = useMutation({
-    mutationFn: async (id: string) => {
-      const { error } = await supabase.from('emotion_records').delete().eq('id', id);
-      if (error) throw error;
-    },
-    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['emotions'] }),
-  });
-
-  return {
-    emotions: query.data ?? [],
-    isLoading: query.isLoading,
-    addEmotion: addMutation.mutateAsync,
-    deleteEmotion: deleteMutation.mutateAsync,
-  };
-}
-
-function mapEmotion(row: Record<string, unknown>): EmotionRecord {
-  return {
-    id: row.id as string,
-    userId: row.user_id as string,
-    relationshipId: (row.relationship_id as string) ?? undefined,
-    mood: row.mood as EmotionRecord['mood'],
-    score: row.score as number,
-    content: row.content as string,
-    tags: (row.tags as string[]) ?? [],
-    createdAt: row.created_at as string,
-    updatedAt: row.updated_at as string,
-  };
-}
-
-// ============================================
 // Analysis History
 // ============================================
 export function useAnalysisHistory() {
@@ -411,6 +271,27 @@ function mapAnalysisResult(row: Record<string, unknown>): AnalysisResult {
     score: (row.score as number) ?? undefined,
     createdAt: row.created_at as string,
   };
+}
+
+// ============================================
+// Single Analysis Result (by ID)
+// ============================================
+export function useAnalysisDetail(id: string | undefined) {
+  const supabase = createClient();
+
+  return useQuery({
+    queryKey: ['analysis_result', id],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from('analysis_results')
+        .select('*')
+        .eq('id', id!)
+        .single();
+      if (error) throw error;
+      return mapAnalysisResult(data as Record<string, unknown>);
+    },
+    enabled: !!id,
+  });
 }
 
 // ============================================

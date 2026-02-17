@@ -10,7 +10,7 @@ export default function MainLayout({
 }) {
   return (
     <AuthGuard>
-      <div className="min-h-screen pb-16">
+      <div className="mx-auto min-h-screen max-w-screen-sm pb-16">
         {children}
         <BottomNav />
       </div>

@@ -50,10 +50,12 @@ export default function OnboardingPage() {
       setProfile({
         id: data.id,
         userId: data.user_id,
+        userCode: data.user_code ?? '',
         mbti: data.mbti ?? undefined,
         birthYear: data.birth_year ?? undefined,
         gender: data.gender ?? undefined,
         loveStyle: data.love_style ?? undefined,
+        lastReportAt: data.last_report_at ?? undefined,
         createdAt: data.created_at,
         updatedAt: data.updated_at,
       });
@@ -72,43 +74,39 @@ export default function OnboardingPage() {
 
   return (
     <div className="flex min-h-screen flex-col px-6 py-12">
-      <div className="mb-8 flex flex-col items-center gap-2">
-        <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-secondary shadow-neo-md border border-border">
-          <Heart className="h-8 w-8 text-primary" fill="currentColor" />
+      <div className="animate-in fade-in slide-in-from-bottom-4 duration-700 flex flex-col flex-1">
+        <div className="mb-8 flex flex-col items-center gap-2">
+          <div className="flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 shadow-neo-md">
+            <Heart className="h-8 w-8 text-white" fill="currentColor" />
+          </div>
+          <h1 className="mt-2 text-xl font-bold text-foreground">프로필을 알려주세요</h1>
+          <p className="text-center text-sm text-muted-foreground leading-relaxed">
+            더 정확한 분석을 위해 간단한 정보를 입력해주세요.
+            <br />
+            나중에 언제든 수정할 수 있어요.
+          </p>
         </div>
-        <h1 className="mt-2 text-xl font-bold text-foreground">프로필을 알려주세요</h1>
-        <p className="text-center text-sm text-muted-foreground">
-          더 정확한 분석을 위해 간단한 정보를 입력해주세요.
-          <br />
-          나중에 언제든 수정할 수 있어요.
-        </p>
-      </div>
 
-      <Card className="flex-1 shadow-neo">
-        <CardContent className="p-5 space-y-6">
-          <MbtiSlider value={mbti} onChange={setMbti} />
+        <Card className="flex-1 shadow-neo">
+          <CardContent className="p-5 space-y-6">
+            <MbtiSlider value={mbti} onChange={setMbti} />
+            <div className="h-px bg-border" />
+            <BirthYearPicker value={birthYear} onChange={setBirthYear} />
+            <div className="h-px bg-border" />
+            <GenderSelector value={gender} onChange={setGender} />
+            <div className="h-px bg-border" />
+            <LoveStyleTextarea value={loveStyle} onChange={setLoveStyle} />
+          </CardContent>
+        </Card>
 
-          <div className="h-px bg-border" />
-
-          <BirthYearPicker value={birthYear} onChange={setBirthYear} />
-
-          <div className="h-px bg-border" />
-
-          <GenderSelector value={gender} onChange={setGender} />
-
-          <div className="h-px bg-border" />
-
-          <LoveStyleTextarea value={loveStyle} onChange={setLoveStyle} />
-        </CardContent>
-      </Card>
-
-      <div className="mt-6 space-y-3">
-        <Button onClick={handleSubmit} disabled={isSaving} className="w-full shadow-neo hover-neo">
-          {isSaving ? '저장 중...' : '시작하기'}
-        </Button>
-        <Button onClick={handleSkip} variant="ghost" className="w-full text-muted-foreground">
-          나중에 할게요
-        </Button>
+        <div className="mt-6 space-y-3">
+          <Button onClick={handleSubmit} disabled={isSaving} className="w-full shadow-neo hover-neo">
+            {isSaving ? '저장 중...' : '시작하기'}
+          </Button>
+          <Button onClick={handleSkip} variant="ghost" className="w-full text-muted-foreground">
+            나중에 할게요
+          </Button>
+        </div>
       </div>
     </div>
   );

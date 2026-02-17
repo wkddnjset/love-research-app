@@ -37,7 +37,7 @@ export default function RootLayout({
     <html lang="ko" suppressHydrationWarning>
       <body className={`${geistSans.variable} font-sans antialiased`}>
         <Providers>
-          <div className="mx-auto max-w-screen-sm">{children}</div>
+          {children}
         </Providers>
       </body>
     </html>

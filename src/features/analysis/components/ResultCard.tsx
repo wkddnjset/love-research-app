@@ -10,13 +10,13 @@ interface ResultCardProps {
 
 export default function ResultCard({ title, children, icon }: ResultCardProps) {
   return (
-    <Card className="shadow-neo">
+    <Card className="border-2 border-border shadow-neo">
       <CardContent className="p-4">
         <h3 className="flex items-center gap-2 font-bold text-foreground">
-          {icon && <span>{icon}</span>}
+          {icon && <span className="text-lg">{icon}</span>}
           {title}
         </h3>
-        <div className="mt-3 text-sm text-muted-foreground">{children}</div>
+        <div className="mt-3 text-sm text-muted-foreground leading-relaxed">{children}</div>
       </CardContent>
     </Card>
   );

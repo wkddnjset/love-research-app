@@ -17,10 +17,12 @@ export interface User {
 export interface UserProfile {
   id: string;
   userId: string;
+  userCode: string;
   mbti?: string;
   birthYear?: number;
   gender?: 'male' | 'female' | 'other';
   loveStyle?: string;
+  lastReportAt?: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -97,7 +99,7 @@ export interface EmotionRecord {
 // ============================================
 // AI 분석 결과
 // ============================================
-export type AnalysisModuleType = 'compatibility' | 'mediator' | 'breakup' | 'some' | 'report';
+export type AnalysisModuleType = 'compatibility' | 'report';
 
 export interface AnalysisResult {
   id: string;
@@ -110,21 +112,59 @@ export interface AnalysisResult {
 }
 
 // ============================================
-// 구독 정보
+// 궁합 분석 결과 (양방향)
 // ============================================
-export interface Subscription {
+export interface CompatibilityResult {
+  id: string;
+  requesterId: string;
+  targetId: string;
+  result: {
+    score: number;
+    strengths: string[];
+    weaknesses: string[];
+    cautions: string[];
+    advice: string;
+  };
+  score?: number;
+  createdAt: string;
+}
+
+// ============================================
+// 매칭 티켓
+// ============================================
+export interface MatchingTicket {
   id: string;
   userId: string;
-  plan: 'free' | 'premium';
-  paddleSubscriptionId?: string;
-  paddleCustomerId?: string;
-  status: 'active' | 'cancelled' | 'expired';
-  currentPeriodStart?: string;
-  currentPeriodEnd?: string;
-  analysisUsedCount: number;
-  analysisResetDate: string;
+  purchaseType: 'earlybird' | 'regular';
+  price: number;
+  status: 'unused' | 'used' | 'refunded';
+  paddleTransactionId?: string;
+  purchasedAt: string;
+  usedAt?: string;
+  createdAt: string;
+}
+
+// ============================================
+// 데일리 연애 질문
+// ============================================
+export interface DailyQuestion {
+  id: string;
+  question: string;
+  keyword: string;
+  scheduledDate?: string;
+  isActive: boolean;
+  createdBy?: string;
   createdAt: string;
   updatedAt: string;
+}
+
+export interface DailyAnswer {
+  id: string;
+  userId: string;
+  questionId: string;
+  answer: string;
+  createdAt: string;
+  question?: DailyQuestion;
 }
 
 // ============================================
@@ -141,69 +181,16 @@ export interface UsageLog {
 // AI 분석 입력/출력 타입
 // ============================================
 export interface CompatibilityInput {
-  myMbti: string;
-  partnerMbti: string;
-  myPersonality: string;
-  partnerPersonality: string;
-  conflictHistory: string[];
-  relationshipId?: string;
+  requesterCode: string;
+  targetCode: string;
 }
 
-export interface CompatibilityResult {
+export interface CompatibilityAnalysisResult {
   score: number;
   strengths: string[];
   weaknesses: string[];
   cautions: string[];
   advice: string;
-  analysisId: string;
-}
-
-export interface MediatorInput {
-  situation: string;
-  partnerMbti: string;
-  relationshipStage: string;
-  conflictType: string;
-}
-
-export interface MediatorResult {
-  dontSay: string[];
-  reconciliationSteps: { step: number; action: string }[];
-  cooldownTime: string;
-  contactTiming: string;
-  recoveryProbability: number;
-  analysisId: string;
-}
-
-export interface BreakupInput {
-  recentConflicts: string;
-  repeatCount: number;
-  satisfactionScore: number;
-  futureAlignmentScore: number;
-  relationshipDuration: number;
-}
-
-export interface BreakupResult {
-  continueProbability: number;
-  improvementPossibility: string;
-  longTermRisks: string[];
-  recommendation: string;
-  thirdPersonComment: string;
-  analysisId: string;
-}
-
-export interface SomeInput {
-  meetCount: number;
-  contactFrequency: string;
-  replySpeed: string;
-  partnerBehavior: string;
-}
-
-export interface SomeResult {
-  successProbability: number;
-  interestLevel: string;
-  pushPullStrategy: string;
-  nextAction: string;
-  analysisId: string;
 }
 
 export interface LoveReportResult {

@@ -4,7 +4,9 @@ import { createClient } from '@/lib/supabase/server';
 import {
   COMPATIBILITY_SYSTEM_PROMPT,
   buildCompatibilityPrompt,
+  buildCompatibilityVariables,
 } from '@/features/analysis/prompts/compatibility';
+import { getPromptTemplate, renderTemplate } from '@/features/analysis/prompts/loader';
 
 export async function POST(request: NextRequest) {
   try {
@@ -63,7 +65,7 @@ export async function POST(request: NextRequest) {
       .select('mbti, personality, conflict_types, style_answers, good_points')
       .eq('user_id', targetProfile.user_id);
 
-    const prompt = buildCompatibilityPrompt({
+    const inputData = {
       myMbti: myProfile?.mbti || '미입력',
       myGender: myProfile?.gender || '미입력',
       myLoveStyle: myProfile?.love_style || '미입력',
@@ -82,9 +84,21 @@ export async function POST(request: NextRequest) {
         conflictTypes: p.conflict_types,
         styleAnswers: p.style_answers,
       })),
-    });
+    };
 
-    const aiResponse = await analyzeWithClaude(COMPATIBILITY_SYSTEM_PROMPT, prompt);
+    let systemPrompt: string;
+    let userMessage: string;
+
+    const dbTemplate = await getPromptTemplate('compatibility');
+    if (dbTemplate) {
+      systemPrompt = dbTemplate.systemPrompt;
+      userMessage = renderTemplate(dbTemplate.userPromptTemplate, buildCompatibilityVariables(inputData));
+    } else {
+      systemPrompt = COMPATIBILITY_SYSTEM_PROMPT;
+      userMessage = buildCompatibilityPrompt(inputData);
+    }
+
+    const aiResponse = await analyzeWithClaude(systemPrompt, userMessage);
     const result = JSON.parse(aiResponse);
 
     // compatibility_results에 양방향 저장

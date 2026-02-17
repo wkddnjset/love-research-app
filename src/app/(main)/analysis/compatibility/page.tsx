@@ -107,7 +107,7 @@ export default function CompatibilityPage() {
                     </label>
                     <Input
                       {...register('targetCode')}
-                      placeholder="LR-A3X9K2"
+                      placeholder="코드를 입력하세요"
                       className="h-12 text-center font-mono text-lg tracking-widest uppercase"
                       maxLength={9}
                     />

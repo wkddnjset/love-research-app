@@ -168,6 +168,18 @@ export interface DailyAnswer {
 }
 
 // ============================================
+// 프롬프트 템플릿
+// ============================================
+export interface PromptTemplate {
+  id: string;
+  moduleType: 'report' | 'compatibility';
+  systemPrompt: string;
+  userPromptTemplate: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ============================================
 // 콘텐츠 사용 로그
 // ============================================
 export interface UsageLog {

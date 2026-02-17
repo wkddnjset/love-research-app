@@ -61,7 +61,7 @@ export default function HomePage() {
 
         {/* 2. 나의 코드 */}
         {userCode && (
-          <Card className="overflow-hidden border border-primary/25 bg-card/80 shadow-neo backdrop-blur-sm">
+          <Card className="overflow-hidden border border-primary/25 bg-card/80 shadow-neo backdrop-blur-sm p-0">
             <CardContent className="flex items-center justify-between gap-4 p-4">
               <div className="min-w-0 flex-1">
                 <p className="text-[10px] font-semibold uppercase tracking-widest text-muted-foreground">

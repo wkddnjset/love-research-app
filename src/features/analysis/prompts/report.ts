@@ -53,3 +53,54 @@ ${dailySummary || '답변 데이터 없음'}
 
 위 데이터를 바탕으로 나의 연애 성향을 종합 분석해주세요.`;
 }
+
+// 템플릿 변수 플레이스홀더를 사용하는 유저 프롬프트 템플릿
+export const REPORT_USER_PROMPT_TEMPLATE = `나의 MBTI: {{mbti}}
+전 애인 수: {{exPartnerCount}}명
+{{exSummary}}
+
+최근 데일리 연애 질문 답변:
+{{dailySummary}}
+
+위 데이터를 바탕으로 나의 연애 성향을 종합 분석해주세요.`;
+
+// 데이터로부터 템플릿 변수 맵 생성
+export function buildReportVariables(userData: {
+  mbti?: string;
+  exPartners: Array<{
+    nickname?: string;
+    mbti?: string;
+    styleAnswers?: Record<string, string>;
+    goodPoints?: string;
+    breakupReason?: string;
+    conflictTypes?: string[];
+  }>;
+  dailyAnswers: Array<{
+    keyword: string;
+    question: string;
+    answer: string;
+  }>;
+}): Record<string, string> {
+  const exSummary = userData.exPartners.map((p, i) => {
+    const parts = [`전 애인 ${i + 1}: ${p.nickname || '익명'}`];
+    if (p.mbti) parts.push(`MBTI: ${p.mbti}`);
+    if (p.breakupReason) parts.push(`이별 사유: ${p.breakupReason}`);
+    if (p.goodPoints) parts.push(`좋았던 점: ${p.goodPoints}`);
+    if (p.conflictTypes?.length) parts.push(`갈등 유형: ${p.conflictTypes.join(', ')}`);
+    if (p.styleAnswers && Object.keys(p.styleAnswers).length > 0) {
+      parts.push(`소통 스타일: ${JSON.stringify(p.styleAnswers)}`);
+    }
+    return parts.join(' | ');
+  }).join('\n');
+
+  const dailySummary = userData.dailyAnswers.map((a) =>
+    `[${a.keyword}] Q: ${a.question} → A: ${a.answer}`
+  ).join('\n');
+
+  return {
+    mbti: userData.mbti || '미입력',
+    exPartnerCount: String(userData.exPartners.length),
+    exSummary: exSummary || '과거 연애 데이터 없음',
+    dailySummary: dailySummary || '답변 데이터 없음',
+  };
+}

@@ -4,7 +4,9 @@ import { createClient } from '@/lib/supabase/server';
 import {
   REPORT_SYSTEM_PROMPT,
   buildReportPrompt,
+  buildReportVariables,
 } from '@/features/analysis/prompts/report';
+import { getPromptTemplate, renderTemplate } from '@/features/analysis/prompts/loader';
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,13 +37,25 @@ export async function POST(request: NextRequest) {
       };
     });
 
-    const prompt = buildReportPrompt({
+    const userData = {
       mbti: body.mbti,
       exPartners: body.exPartners || [],
       dailyAnswers,
-    });
+    };
 
-    const aiResponse = await analyzeWithClaude(REPORT_SYSTEM_PROMPT, prompt);
+    let systemPrompt: string;
+    let userMessage: string;
+
+    const dbTemplate = await getPromptTemplate('report');
+    if (dbTemplate) {
+      systemPrompt = dbTemplate.systemPrompt;
+      userMessage = renderTemplate(dbTemplate.userPromptTemplate, buildReportVariables(userData));
+    } else {
+      systemPrompt = REPORT_SYSTEM_PROMPT;
+      userMessage = buildReportPrompt(userData);
+    }
+
+    const aiResponse = await analyzeWithClaude(systemPrompt, userMessage);
 
     // last_report_at 업데이트
     await supabase

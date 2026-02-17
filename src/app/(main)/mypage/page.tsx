@@ -75,7 +75,7 @@ export default function MyPage() {
 
       <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 px-4 pb-8 pt-4 space-y-5">
         {/* 프로필 카드 */}
-        <Card className="overflow-hidden border border-border shadow-neo-md rounded-2xl p-0">
+        <Card className="overflow-hidden border border-border shadow-neo-md rounded-2xl p-0 gap-0">
           <div className="border-b border-sidebar-border bg-gradient-to-br from-sidebar to-primary/5 p-5">
             <div className="flex items-center gap-4">
               <div className="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-pink-400 to-rose-500 shadow-sm ring-2 ring-white/20">

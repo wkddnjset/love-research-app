@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useRouter } from 'next/navigation';
-import { LayoutDashboard, Users, CreditCard, MessageSquareHeart, LogOut } from 'lucide-react';
+import { LayoutDashboard, Users, CreditCard, MessageSquareHeart, FileText, LogOut } from 'lucide-react';
 
 import { cn } from '@/lib/utils';
 
@@ -12,6 +12,7 @@ const ADMIN_NAV = [
   { href: '/admin/users', label: '유저 관리', Icon: Users },
   { href: '/admin/payments', label: '결제 관리', Icon: CreditCard },
   { href: '/admin/daily-questions', label: '데일리 질문', Icon: MessageSquareHeart },
+  { href: '/admin/prompts', label: '프롬프트 관리', Icon: FileText },
 ];
 
 export default function AdminSidebar() {
